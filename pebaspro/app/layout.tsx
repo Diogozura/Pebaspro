@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import '@fontsource/inter';
 import './globals.css';
+import MobileBottomNav from '@/components/MobileBottomNav';
 
 export const metadata = {
   title: 'PebasPro',
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeRegistry>
           <Header />
           {children}
+          <MobileBottomNav />
         </ThemeRegistry>
       </body>
     </html>

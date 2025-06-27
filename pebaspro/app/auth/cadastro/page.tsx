@@ -7,30 +7,24 @@ import {
   TextField,
   Typography,
   Link as MuiLink,
+  Divider,
 } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState } from 'react';
 
-export default function CadastroPage() {
+export default function LoginPage() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    nome: '',
-    telefone: '',
-    email: '',
-    senha: '',
-  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // futuramente aqui vai o Firebase login
+    router.push('/auth/cadastro/email');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Aqui futuramente entra o cadastro com Firebase Auth e Firestore
-    console.log('Dados do cadastro:', form);
-    router.push('/dashboard');
+  const handleGoogleLogin = () => {
+    // aqui depois vai o login com Google
+    router.push('/auth/cadastro/informacoes');
   };
 
   return (
@@ -54,57 +48,46 @@ export default function CadastroPage() {
         />
 
         <Typography variant="h5" mt={2} fontWeight={600}>
-          Criar Conta
+          PEBASPROFISSIONAIS
         </Typography>
         <Typography variant="body1" mb={3}>
-          Preencha os dados abaixo para continuar
+          Entre na sua conta para continuar
         </Typography>
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Nome completo"
-            name="nome"
-            value={form.nome}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Telefone (WhatsApp)"
-            name="telefone"
-            value={form.telefone}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
-          />
+        <form onSubmit={handleLogin}>
           <TextField
             fullWidth
             label="E-mail"
-            name="email"
             type="email"
-            value={form.email}
-            onChange={handleChange}
+            variant="outlined"
             sx={{ mb: 2 }}
           />
-          <TextField
-            fullWidth
-            label="Senha"
-            name="senha"
-            type="password"
-            value={form.senha}
-            onChange={handleChange}
-            sx={{ mb: 3 }}
-          />
 
-          <Button type="submit" fullWidth variant="contained">
-            Cadastrar
+          <Button
+            fullWidth
+            type="submit"
+            variant="contained"
+            sx={{ mb: 2 }}
+          >
+            Entrar
           </Button>
         </form>
 
+        <Divider sx={{ my: 2 }}>OU</Divider>
+
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={handleGoogleLogin}
+          sx={{ backgroundColor: '#4285F4', color: '#fff', '&:hover': { backgroundColor: '#357ae8' } }}
+        >
+          Google
+        </Button>
+
         <Typography variant="body2" mt={3}>
-          Já tem conta?{' '}
+        Já tem conta?  {' '}
           <MuiLink component={Link} href="/auth/login" underline="hover">
-            Entrar
+           Entrar
           </MuiLink>
         </Typography>
       </Box>
