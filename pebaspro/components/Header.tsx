@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-// import { usePathname } from 'next/navigation';
 import PersonIcon from '@mui/icons-material/Person';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 
@@ -26,17 +25,21 @@ export default function Header() {
   ];
 
   return (
-    <AppBar position="static" color="transparent"  elevation={1}>
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
-        {/* Logo */}
+    <AppBar position="static" color="transparent" elevation={1}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
+        {/* Logo - sempre visível */}
         <Box display="flex" alignItems="center">
           <Link href="/">
             <Image src="/logo.png" alt="PebasPro" width={60} height={60} />
           </Link>
         </Box>
 
-        {/* Menus */}
-        <Box display="flex" alignItems="center" gap={2}>
+        {/* Menus - visível apenas em md+ */}
+        <Box
+          display={{ xs: 'none', md: 'flex' }}
+          alignItems="center"
+          gap={2}
+        >
           {menuItems.map((item) => (
             <Button
               key={item.href}
@@ -49,8 +52,12 @@ export default function Header() {
           ))}
         </Box>
 
-        {/* Ações */}
-        <Box display="flex" alignItems="center" gap={1}>
+        {/* Ações (login / ícones) - visível apenas em md+ */}
+        <Box
+          display={{ xs: 'none', md: 'flex' }}
+          alignItems="center"
+          gap={1}
+        >
           {isLoggedIn ? (
             <>
               <IconButton>
