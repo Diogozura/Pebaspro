@@ -11,10 +11,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PersonIcon from '@mui/icons-material/Person';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Header() {
-  // ⚠️ simulação — depois substituímos por useAuth()
-  const isLoggedIn = false;
+const { user } = useAuth();
+const isLoggedIn = !!user;
 
   const menuItems = [
     { label: 'Home', href: '/' },

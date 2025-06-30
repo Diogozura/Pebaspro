@@ -4,7 +4,7 @@ import {
   Avatar,
   Box,
   Card,
-  CardContent,
+  CircularProgress,
   Container,
   IconButton,
   Link,
@@ -12,9 +12,20 @@ import {
   Typography,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import { useAuth } from '@/hooks/useAuth';
+import LogoutButton from '@/components/LogoutButton';
 
 export default function Dashboard() {
   const tipoConta: 'empresa' | 'funcionario' = 'empresa'; // troca para testar
+  const { user, loading } = useAuth(true); // 🔒 redireciona se não tiver login
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" mt={5}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
@@ -29,6 +40,7 @@ export default function Dashboard() {
             textAlign: 'center',
           }}
         >
+          <Typography variant="h4">Bem-vindo(a), {user?.displayName || 'Usuário'}!</Typography>
           <Avatar
             src={
               tipoConta === 'empresa'
@@ -49,6 +61,7 @@ export default function Dashboard() {
           <IconButton size="small">
             <EditIcon fontSize="small" />
           </IconButton>
+          <LogoutButton/>
         </Card>
 
         {/* Contato */}
@@ -127,10 +140,12 @@ export default function Dashboard() {
                   Baixar todos os currículos
                 </Link>
               </Box>
+              
             </Card>
           </>
         )}
       </Stack>
+      
     </Container>
   );
 }

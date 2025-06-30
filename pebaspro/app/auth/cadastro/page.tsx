@@ -12,6 +12,7 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import AuthGoogle from '@/components/AuthGoogle';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -75,14 +76,7 @@ export default function LoginPage() {
 
         <Divider sx={{ my: 2 }}>OU</Divider>
 
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={handleGoogleLogin}
-          sx={{ backgroundColor: '#4285F4', color: '#fff', '&:hover': { backgroundColor: '#357ae8' } }}
-        >
-          Google
-        </Button>
+       <AuthGoogle />
 
         <Typography variant="body2" mt={3}>
         Já tem conta?  {' '}
