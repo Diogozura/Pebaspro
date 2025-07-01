@@ -1,23 +1,43 @@
-'use client';
+// hooks/useAuth.ts (exemplo)
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
-import { useEffect, useState } from 'react';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-
-export function useAuth(redirectIfNotLogged = false) {
-  const [user, setUser] = useState<User | null | undefined>(undefined); // undefined = carregando
+export function useAuth(required = false) {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
-
-      if (redirectIfNotLogged && !firebaseUser) {
-        window.location.href = '/auth/login';
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser) {
+        setUser(null);
+        setLoading(false);
+        return;
       }
+
+      // 🔥 Buscar dados do Firestore
+      const docRef = doc(db, "usuarios", firebaseUser.uid);
+      const snap = await getDoc(docRef);
+
+      if (snap.exists()) {
+        const firestoreData = snap.data();
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          photoURL: firebaseUser.photoURL,
+          displayName: firestoreData.nome || firebaseUser.displayName,
+          ...firestoreData, // adiciona telefone, cidade, etc
+        });
+      } else {
+        setUser(firebaseUser); // fallback caso não tenha Firestore
+      }
+
+      setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [redirectIfNotLogged]);
+    return () => unsub();
+  }, []);
 
-  return { user, loading: user === undefined };
+  return { user, loading };
 }

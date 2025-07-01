@@ -11,3 +11,4 @@ export async function createUser(uid: string, data: any) {
   const docRef = doc(db, 'usuarios', uid);
   await setDoc(docRef, data);
 }
+

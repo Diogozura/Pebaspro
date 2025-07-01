@@ -14,7 +14,7 @@ export default function LogoutButton() {
   };
 
   return (
-    <Button color="inherit" onClick={handleLogout}>
+    <Button color="error" onClick={handleLogout}>
       Sair
     </Button>
   );

@@ -3,23 +3,43 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CircularProgress,
   Container,
   IconButton,
   Link,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 import { useAuth } from '@/hooks/useAuth';
 import LogoutButton from '@/components/LogoutButton';
+import React from 'react';
 
 export default function Dashboard() {
-  const tipoConta: 'empresa' | 'funcionario' = 'empresa'; // troca para testar
-  const { user, loading } = useAuth(true); // 🔒 redireciona se não tiver login
+  const { user, loading } = useAuth(true);
 
-  if (loading) {
+  const [editandoSobre, setEditandoSobre] = React.useState(false);
+  const [novoSobre, setNovoSobre] = React.useState(user?.sobreMim || '');
+
+  const [editandoContato, setEditandoContato] = React.useState(false);
+  const [contato, setContato] = React.useState({
+    whatsapp: user?.whatsapp || '',
+    instagram: user?.instagram || '',
+    facebook: user?.facebook || '',
+    linkedin: user?.linkedin || '',
+  });
+
+  const [editandoCertificacoes, setEditandoCertificacoes] = React.useState(false);
+  const [certificacoes, setCertificacoes] = React.useState(user?.certificacoes || []);
+
+  const tipoConta = user?.tipoConta as 'empresa' | 'profissional';
+
+  if (loading || !user) {
     return (
       <Box display="flex" justifyContent="center" mt={5}>
         <CircularProgress />
@@ -27,125 +47,176 @@ export default function Dashboard() {
     );
   }
 
+  const salvarSobre = async () => {
+    await updateDoc(doc(db, 'usuarios', user.uid), { sobreMim: novoSobre });
+    setEditandoSobre(false);
+  };
+
+  const salvarContato = async () => {
+    await updateDoc(doc(db, 'usuarios', user.uid), contato);
+    setEditandoContato(false);
+  };
+
+  const salvarCertificacoes = async () => {
+    await updateDoc(doc(db, 'usuarios', user.uid), { certificacoes });
+    setEditandoCertificacoes(false);
+  };
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Stack spacing={3}>
-        {/* Card principal */}
-        <Card
-          sx={{
-            boxShadow: 2,
-            border: '1px solid #90caf9',
-            borderRadius: 2,
-            p: 2,
-            textAlign: 'center',
-          }}
-        >
-          <Typography variant="h4">Bem-vindo(a), {user?.displayName || 'Usuário'}!</Typography>
-          <Avatar
-            src={
-              tipoConta === 'empresa'
-                ? '/logo_empresa.png'
-                : 'https://randomuser.me/api/portraits/men/75.jpg'
-            }
-            sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }}
-          />
-          <Typography variant="h6">
-            {tipoConta === 'empresa' ? 'Electrical' : 'Pedro'}
-          </Typography>
-          <Typography variant="body2">
-            {tipoConta === 'empresa' ? 'Elétrica residencial' : 'Eletricista'}
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            Parauapebas
-          </Typography>
-          <IconButton size="small">
-            <EditIcon fontSize="small" />
-          </IconButton>
-          <LogoutButton/>
+
+        {/* Perfil principal */}
+        <Card sx={{ boxShadow: 2, border: '1px solid #90caf9', borderRadius: 2, p: 2, textAlign: 'center' }}>
+          <Avatar src={user.photoURL || '/default-avatar.png'} sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }} />
+          <Typography variant="h6">{user.displayName}</Typography>
+          <Typography variant="body2">{user.atuacao || 'Nenhuma atuação informada'}</Typography>
+          <Typography variant="body2" gutterBottom>{user.cidade || 'Cidade não informada'}</Typography>
+
+          <Box my={2}>
+            <Link href={`/dashboard/perfil/${user.uid}`} underline="none" target="_blank" rel="noopener noreferrer">
+              <Button variant="outlined">Ver meu perfil público</Button>
+            </Link>
+          </Box>
+
+          <LogoutButton />
         </Card>
 
         {/* Contato */}
-        <Card
-          sx={{
-            boxShadow: 1,
-            border: '1px solid #bbdefb',
-            borderRadius: 2,
-            p: 2,
-            backgroundColor: '#f5faff',
-          }}
-        >
+        <Card sx={{ boxShadow: 1, border: '1px solid #bbdefb', borderRadius: 2, p: 2, backgroundColor: '#f5faff' }}>
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
             <Typography variant="subtitle1" fontWeight={600}>
-              {tipoConta === 'empresa' ? 'Informações pessoais' : 'Contato'}
+              {tipoConta === 'profissional' ? 'Informações pessoais' : 'Contato'}
             </Typography>
-            <IconButton size="small">
+            <IconButton size="small" onClick={() => setEditandoContato(!editandoContato)}>
               <EditIcon fontSize="small" />
             </IconButton>
           </Box>
 
-          <Typography variant="body2">Telefone: (99) 99999-9999</Typography>
-          <Typography variant="body2">Email: pedro@email.com</Typography>
+          {editandoContato ? (
+            <>
+              <TextField fullWidth label="WhatsApp" margin="dense" value={contato.whatsapp}
+                onChange={(e) => setContato({ ...contato, whatsapp: e.target.value })} />
+              <TextField fullWidth label="Instagram" margin="dense" value={contato.instagram}
+                onChange={(e) => setContato({ ...contato, instagram: e.target.value })} />
+              <TextField fullWidth label="Facebook" margin="dense" value={contato.facebook}
+                onChange={(e) => setContato({ ...contato, facebook: e.target.value })} />
+              <TextField fullWidth label="LinkedIn" margin="dense" value={contato.linkedin}
+                onChange={(e) => setContato({ ...contato, linkedin: e.target.value })} />
+              <TextField fullWidth label="Email" margin="dense" value={user.email} disabled />
+
+              <Box mt={2}>
+                <Button variant="contained" onClick={salvarContato}>Salvar</Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Typography variant="body2">WhatsApp: {user.whatsapp || 'Não informado'}</Typography>
+              <Typography variant="body2">Instagram: {user.instagram || 'Não informado'}</Typography>
+              <Typography variant="body2">Facebook: {user.facebook || 'Não informado'}</Typography>
+              <Typography variant="body2">LinkedIn: {user.linkedin || 'Não informado'}</Typography>
+              <Typography variant="body2">Email: {user.email}</Typography>
+            </>
+          )}
         </Card>
 
         {/* Sobre mim */}
-        <Card
-          sx={{
-            boxShadow: 1,
-            border: '1px solid #bbdefb',
-            borderRadius: 2,
-            p: 2,
-            backgroundColor: '#f5faff',
-          }}
-        >
+        <Card sx={{ boxShadow: 1, border: '1px solid #bbdefb', borderRadius: 2, p: 2, backgroundColor: '#f5faff' }}>
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-            <Typography variant="subtitle1" fontWeight={600}>
-              Sobre mim
-            </Typography>
-            <IconButton size="small">
-              <EditIcon fontSize="small" />
-            </IconButton>
+            <Typography variant="subtitle1" fontWeight={600}>Sobre mim</Typography>
+            {!editandoSobre && (
+              <IconButton size="small" onClick={() => setEditandoSobre(true)}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+            )}
           </Box>
-          <Typography variant="body2">
-            {tipoConta === 'empresa'
-              ? 'Somos uma empresa de elétrica residencial na cidade ...'
-              : 'Sou eletricista formado no SENAI e atuei em diversas obras da região ...'}
-          </Typography>
+
+          {editandoSobre ? (
+            <>
+              <TextField fullWidth multiline rows={4} value={novoSobre}
+                onChange={(e) => setNovoSobre(e.target.value)} />
+              <Box mt={1} display="flex" gap={1}>
+                <Button variant="contained" size="small" onClick={salvarSobre}>Salvar</Button>
+                <Button size="small" onClick={() => {
+                  setNovoSobre(user.sobreMim || '');
+                  setEditandoSobre(false);
+                }}>Cancelar</Button>
+              </Box>
+            </>
+          ) : (
+            <Typography variant="body2">{user.sobreMim || 'Nenhuma informação ainda.'}</Typography>
+          )}
         </Card>
 
-        {/* Se for EMPRESA, mostrar vagas */}
+        {/* Certificações */}
+        {tipoConta === 'profissional' && (
+          <Card sx={{ boxShadow: 1, border: '1px solid #bbdefb', borderRadius: 2, p: 2, backgroundColor: '#f5faff' }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+              <Typography variant="subtitle1" fontWeight={600}>Certificações</Typography>
+              <IconButton size="small" onClick={() => setEditandoCertificacoes(!editandoCertificacoes)}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Box>
+
+            {editandoCertificacoes ? (
+              <>
+                {certificacoes.map((cert: any, idx: number) => (
+                  <Box key={idx} display="flex" gap={1} mb={1}>
+                    <TextField label="Nome" fullWidth value={cert.nome}
+                      onChange={(e) => {
+                        const nova = [...certificacoes];
+                        nova[idx].nome = e.target.value;
+                        setCertificacoes(nova);
+                      }} />
+                    <TextField label="Data" type="month" value={cert.data}
+                      onChange={(e) => {
+                        const nova = [...certificacoes];
+                        nova[idx].data = e.target.value;
+                        setCertificacoes(nova);
+                      }} />
+                  </Box>
+                ))}
+                <Box display="flex" gap={1}>
+                  <Button variant="outlined" onClick={() => setCertificacoes([...certificacoes, { nome: '', data: '' }])}>
+                    + Adicionar
+                  </Button>
+                  <Button variant="contained" onClick={salvarCertificacoes}>Salvar</Button>
+                  <Button onClick={() => setEditandoCertificacoes(false)}>Cancelar</Button>
+                </Box>
+              </>
+            ) : (
+              <>
+                {user.certificacoes?.length ? (
+                  user.certificacoes.map((cert: any, idx: number) => (
+                    <Typography key={idx} variant="body2">{cert.nome} — {cert.data}</Typography>
+                  ))
+                ) : (
+                  <Typography variant="body2">Nenhuma certificação cadastrada.</Typography>
+                )}
+              </>
+            )}
+          </Card>
+        )}
+
+        {/* Vagas para empresa */}
         {tipoConta === 'empresa' && (
           <>
             <Typography variant="subtitle1" fontWeight={600}>
               Vagas de empregos criadas
             </Typography>
-            <Link href="/vagas/criar" underline="hover">
-                 criar vaga
-                </Link>
-            <Card
-              sx={{
-                boxShadow: 1,
-                border: '1px solid #bbdefb',
-                borderRadius: 2,
-                p: 2,
-                backgroundColor: '#f5faff',
-              }}
-            >
-              <Typography variant="body2" fontWeight={600}>
-                Vagas Eletricistas
-              </Typography>
+            <Link href="/vagas/criar" underline="hover">Criar vaga</Link>
+            <Card sx={{ boxShadow: 1, border: '1px solid #bbdefb', borderRadius: 2, p: 2, backgroundColor: '#f5faff' }}>
+              <Typography variant="body2" fontWeight={600}>Vagas Eletricistas</Typography>
               <Typography variant="body2">Criada em: 15/06/2025</Typography>
               <Typography variant="body2">Total de interessados: 15</Typography>
               <Box mt={1}>
-                <Link href="#" underline="hover">
-                  Baixar todos os currículos
-                </Link>
+                <Link href="#" underline="hover">Baixar todos os currículos</Link>
               </Box>
-              
             </Card>
           </>
         )}
+
       </Stack>
-      
     </Container>
   );
 }
