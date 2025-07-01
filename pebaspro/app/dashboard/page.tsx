@@ -35,7 +35,14 @@ export default function Dashboard() {
   });
 
   const [editandoCertificacoes, setEditandoCertificacoes] = React.useState(false);
-  const [certificacoes, setCertificacoes] = React.useState(user?.certificacoes || []);
+  const [certificacoes, setCertificacoes] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (user?.certificacoes) {
+      setCertificacoes(user.certificacoes);
+    }
+  }, [user]);
+
 
   const tipoConta = user?.tipoConta as 'empresa' | 'profissional';
 
@@ -150,9 +157,19 @@ export default function Dashboard() {
 
         {/* Certificações */}
         {tipoConta === 'profissional' && (
-          <Card sx={{ boxShadow: 1, border: '1px solid #bbdefb', borderRadius: 2, p: 2, backgroundColor: '#f5faff' }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-              <Typography variant="subtitle1" fontWeight={600}>Certificações</Typography>
+          <Card
+            sx={{
+              boxShadow: 1,
+              border: '1px solid #bbdefb',
+              borderRadius: 2,
+              p: 2,
+              backgroundColor: '#f5faff',
+            }}
+          >
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="subtitle1" fontWeight={600}>
+                Certificações
+              </Typography>
               <IconButton size="small" onClick={() => setEditandoCertificacoes(!editandoCertificacoes)}>
                 <EditIcon fontSize="small" />
               </IconButton>
@@ -161,26 +178,66 @@ export default function Dashboard() {
             {editandoCertificacoes ? (
               <>
                 {certificacoes.map((cert: any, idx: number) => (
-                  <Box key={idx} display="flex" gap={1} mb={1}>
-                    <TextField label="Nome" fullWidth value={cert.nome}
-                      onChange={(e) => {
-                        const nova = [...certificacoes];
-                        nova[idx].nome = e.target.value;
-                        setCertificacoes(nova);
-                      }} />
-                    <TextField label="Data" type="month" value={cert.data}
-                      onChange={(e) => {
-                        const nova = [...certificacoes];
-                        nova[idx].data = e.target.value;
-                        setCertificacoes(nova);
-                      }} />
-                  </Box>
+                  <Card
+                    key={idx}
+                    variant="outlined"
+                    sx={{ mb: 2, p: 2, position: 'relative', background: '#fff' }}
+                  >
+                    <Box display="flex" flexDirection="column" gap={2}>
+                      <TextField
+                        label="Curso"
+                        value={cert.nome}
+                        onChange={(e) => {
+                          const nova = [...certificacoes];
+                          nova[idx].nome = e.target.value;
+                          setCertificacoes(nova);
+                        }}
+                      />
+                      <TextField
+                        label="Instituição"
+                        value={cert.instituicao || ''}
+                        onChange={(e) => {
+                          const nova = [...certificacoes];
+                          nova[idx].instituicao = e.target.value;
+                          setCertificacoes(nova);
+                        }}
+                      />
+                      <TextField
+                        label="Data"
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        value={cert.data}
+                        onChange={(e) => {
+                          const nova = [...certificacoes];
+                          nova[idx].data = e.target.value;
+                          setCertificacoes(nova);
+                        }}
+                      />
+                      <Button
+                        color="error"
+                        onClick={() => {
+                          const nova = certificacoes.filter((_, i) => i !== idx);
+                          setCertificacoes(nova);
+                        }}
+                      >
+                        Remover
+                      </Button>
+                    </Box>
+                  </Card>
                 ))}
-                <Box display="flex" gap={1}>
-                  <Button variant="outlined" onClick={() => setCertificacoes([...certificacoes, { nome: '', data: '' }])}>
-                    + Adicionar
+
+                <Box display="flex" gap={1} flexWrap="wrap">
+                  <Button
+                    variant="outlined"
+                    onClick={() =>
+                      setCertificacoes([...certificacoes, { nome: '', instituicao: '', data: '' }])
+                    }
+                  >
+                    + Adicionar nova certificação
                   </Button>
-                  <Button variant="contained" onClick={salvarCertificacoes}>Salvar</Button>
+                  <Button variant="contained" onClick={salvarCertificacoes}>
+                    Salvar todas
+                  </Button>
                   <Button onClick={() => setEditandoCertificacoes(false)}>Cancelar</Button>
                 </Box>
               </>
@@ -188,7 +245,15 @@ export default function Dashboard() {
               <>
                 {user.certificacoes?.length ? (
                   user.certificacoes.map((cert: any, idx: number) => (
-                    <Typography key={idx} variant="body2">{cert.nome} — {cert.data}</Typography>
+                    <Card key={idx} variant="outlined" sx={{ mb: 2, p: 2 }}>
+                      <Typography variant="body2" fontWeight={600}>
+                        {cert.nome}
+                      </Typography>
+                      <Typography variant="body2">
+                        {cert.instituicao} —{' '}
+                        {cert.data ? new Date(cert.data).toLocaleDateString('pt-BR') : 'Data não informada'}
+                      </Typography>
+                    </Card>
                   ))
                 ) : (
                   <Typography variant="body2">Nenhuma certificação cadastrada.</Typography>
@@ -197,6 +262,8 @@ export default function Dashboard() {
             )}
           </Card>
         )}
+
+
 
         {/* Vagas para empresa */}
         {tipoConta === 'empresa' && (
