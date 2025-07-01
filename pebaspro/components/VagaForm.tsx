@@ -1,9 +1,17 @@
 'use client';
 
 import {
-  Box, Button, Container, Grid, MenuItem, TextField, Typography,
+  Box,
+  Button,
+  Container,
+  MenuItem,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { useState } from 'react';
+
+import Grid from '@mui/material/Grid';
+import React from 'react';
+
 
 interface Vaga {
   titulo: string;
@@ -26,7 +34,7 @@ interface Props {
 }
 
 export default function VagaForm({ modo, vaga }: Props) {
-  const [dados, setDados] = useState<Vaga>(
+  const [dados, setDados] = React.useState<Vaga>(
     vaga || {
       titulo: '',
       tipo: 'efetivo',
@@ -63,11 +71,11 @@ export default function VagaForm({ modo, vaga }: Props) {
       </Typography>
 
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid >
           <TextField fullWidth label="Título da vaga" name="titulo" value={dados.titulo} onChange={handleChange} disabled={modo === 'visualizar'} />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid  >
           <TextField
             select fullWidth label="Tipo"
             name="tipo" value={dados.tipo} onChange={handleChange}
@@ -78,7 +86,7 @@ export default function VagaForm({ modo, vaga }: Props) {
           </TextField>
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid>
           <TextField
             select fullWidth label="Modalidade"
             name="modalidade" value={dados.modalidade} onChange={handleChange}
@@ -90,19 +98,19 @@ export default function VagaForm({ modo, vaga }: Props) {
           </TextField>
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid >
           <TextField fullWidth label="Jornada" name="jornada" value={dados.jornada} onChange={handleChange} disabled={modo === 'visualizar'} />
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid >
           <TextField fullWidth label="Faixa salarial" name="salario" value={dados.salario} onChange={handleChange} disabled={modo === 'visualizar'} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid >
           <TextField fullWidth label="Local (Cidade/Bairro)" name="local" value={dados.local} onChange={handleChange} disabled={modo === 'visualizar'} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid >
           <TextField
             fullWidth multiline minRows={3}
             label="Descrição da vaga" name="descricao"
@@ -111,7 +119,7 @@ export default function VagaForm({ modo, vaga }: Props) {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid >
           <TextField
             fullWidth multiline minRows={2}
             label="Requisitos" name="requisitos"
@@ -120,7 +128,7 @@ export default function VagaForm({ modo, vaga }: Props) {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid >
           <TextField
             fullWidth multiline minRows={2}
             label="Benefícios" name="beneficios"
@@ -129,18 +137,18 @@ export default function VagaForm({ modo, vaga }: Props) {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid >
           <TextField fullWidth label="WhatsApp para contato" name="whatsapp" value={dados.whatsapp} onChange={handleChange} disabled={modo === 'visualizar'} />
         </Grid>
 
         {modo === 'visualizar' && dados.dataPublicacao && (
-          <Grid item xs={12}>
+          <Grid >
             <Typography variant="body2" color="text.secondary">
               Publicado em: {dados.dataPublicacao}
             </Typography>
           </Grid>
         )}
-<Grid item xs={12}>
+<Grid >
   <TextField
     fullWidth
     label="Encerramento da vaga"
@@ -152,7 +160,7 @@ export default function VagaForm({ modo, vaga }: Props) {
     disabled={modo === 'visualizar'}
   />
 </Grid>
-        <Grid item xs={12}>
+        <Grid >
           <Button fullWidth variant="contained" color={modo === 'criar' ? 'primary' : 'success'} onClick={handleSubmit}>
             {modo === 'criar' ? 'Criar vaga' : 'Candidatar-se'}
           </Button>

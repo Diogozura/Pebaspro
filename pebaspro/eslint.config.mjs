@@ -25,5 +25,10 @@ const nextConfig = withPWA({
   reactStrictMode: true,
   // outras configs...
 });
+module.exports = {
+  nextConfig,
+  typescript: {
+    ignoreBuildErrors: false, // ou true temporariamente
+  },
+};
 
-module.exports = nextConfig;

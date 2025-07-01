@@ -20,7 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 import LogoutButton from '@/components/LogoutButton';
 import React from 'react';
 
-export default function Dashboard() {
+export default function Perfil() {
   const { user, loading } = useAuth(true);
 
   const [editandoSobre, setEditandoSobre] = React.useState(false);

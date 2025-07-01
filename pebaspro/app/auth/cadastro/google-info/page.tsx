@@ -26,8 +26,13 @@ export default function GoogleInfoPage() {
 
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setDados({ ...dados, [e.target.name]: e.target.value });
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const name = event.target.name as string;
+    setDados({ ...dados, [name]: event.target.value as string });
   };
 
   const handleSubmit = async () => {
@@ -80,11 +85,15 @@ export default function GoogleInfoPage() {
         />
 
         <FormControl fullWidth margin="normal">
-          <InputLabel>Tipo de conta</InputLabel>
+          <InputLabel id="tipoConta-label">Tipo de Conta</InputLabel>
           <Select
+            labelId="tipoConta-label"
             name="tipoConta"
             value={dados.tipoConta}
-            onChange={handleChange}
+            label="Tipo de Conta"
+            onChange={(event) =>
+              setDados({ ...dados, tipoConta: event.target.value as string })
+            }
           >
             <MenuItem value="profissional">Profissional</MenuItem>
             <MenuItem value="empresa">Empresa</MenuItem>
