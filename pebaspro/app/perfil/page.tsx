@@ -89,7 +89,7 @@ export default function Perfil() {
           <Typography variant="body2" gutterBottom>{user.cidade || 'Cidade não informada'}</Typography>
 
           <Box my={2}>
-            <Link href={`/dashboard/perfil/${user.uid}`} underline="none" target="_blank" rel="noopener noreferrer">
+            <Link href={`/perfil/${user.uid}`} underline="none"  rel="noopener noreferrer">
               <Button variant="outlined">Ver meu perfil público</Button>
             </Link>
           </Box>

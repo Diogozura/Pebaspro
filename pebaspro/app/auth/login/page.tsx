@@ -20,13 +20,9 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // futuramente aqui vai o Firebase login
-    router.push('/dashboard');
+    router.push('/perfil');
   };
 
-  const handleGoogleLogin = () => {
-    // aqui depois vai o login com Google
-    router.push('/dashboard');
-  };
 
   return (
     <Container maxWidth="sm">

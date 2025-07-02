@@ -20,7 +20,7 @@ export default function AuthGoogle() {
       const exists = await checkIfUserExists(user.uid);
 
       if (exists) {
-        router.push('/dashboard');
+        router.push('/perfil');
       } else {
         router.push('/auth/cadastro/google-info'); // passo para completar dados
       }

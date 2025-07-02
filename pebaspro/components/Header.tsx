@@ -63,7 +63,7 @@ const isLoggedIn = !!user;
         >
           {isLoggedIn ? (
             <>
-              <IconButton component={Link} href="/dashboard">
+              <IconButton component={Link} href="/perfil" color="inherit">
                 <PersonIcon />
               </IconButton>
               <IconButton>
