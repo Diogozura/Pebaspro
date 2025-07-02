@@ -19,9 +19,17 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { useAuth } from '@/hooks/useAuth';
 import LogoutButton from '@/components/LogoutButton';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Perfil() {
   const { user, loading } = useAuth(true);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [loading, user, router]);
 
   const [editandoSobre, setEditandoSobre] = React.useState(false);
   const [novoSobre, setNovoSobre] = React.useState(user?.sobreMim || '');
