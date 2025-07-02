@@ -1,60 +1,28 @@
 'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import VagaForm from '@/components/VagaForm';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import VagaDetalhes from '@/components/VagaDetalhes';
+import React from 'react';
+import { useParams } from 'next/navigation';
 
-export default function VisualizarVagaPage() {
+
+export default function VagaPage() {
   const { id } = useParams();
-  const [vaga, setVaga] = useState<any>(null);
-  const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
+  const [vaga, setVaga] = React.useState<any>(null);
 
-  useEffect(() => {
-    const buscarVaga = async () => {
-      try {
-        const ref = doc(db, 'vagas', String(id));
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          const dados = snap.data();
-          setVaga({
-            ...dados,
-            dataPublicacao: dados.dataPublicacao
-              ? new Date(dados.dataPublicacao).toLocaleDateString('pt-BR')
-              : '',
-          });
-        } else {
-          setErro('Vaga não encontrada');
-        }
-      } catch (e) {
-        console.error('Erro ao buscar vaga:', e);
-        setErro('Erro ao buscar vaga');
-      } finally {
-        setCarregando(false);
+  React.useEffect(() => {
+    const fetchVaga = async () => {
+      if (!id) return;
+      const ref = doc(db, 'vagas', id.toString());
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        setVaga({ id: snap.id, ...snap.data() });
       }
     };
-
-    buscarVaga();
+    fetchVaga();
   }, [id]);
 
-  if (carregando) {
-    return (
-      <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (!vaga) return <p>Carregando vaga...</p>;
 
-  if (erro) {
-    return (
-      <Box textAlign="center" mt={4}>
-        <Typography color="error">{erro}</Typography>
-      </Box>
-    );
-  }
-
-  return <VagaForm modo="visualizar" vaga={vaga} />;
+  return <VagaDetalhes vaga={vaga} />;
 }

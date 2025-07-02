@@ -15,13 +15,14 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
 import { useAuth } from '@/hooks/useAuth';
 import LogoutButton from '@/components/LogoutButton';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import CardProfissional from '@/components/CardProfissional';
 
-export default function Perfil() {
+export default function Perfil({ vagaId }: { vagaId: string }) {
   const { user, loading } = useAuth(true);
   const router = useRouter();
 
@@ -50,9 +51,64 @@ export default function Perfil() {
       setCertificacoes(user.certificacoes);
     }
   }, [user]);
+  const [vagasCriadas, setVagasCriadas] = React.useState<any[]>([]);
 
+  React.useEffect(() => {
+    if (!user || tipoConta !== 'empresa') return;
 
+    const fetch = async () => {
+      const ref = collection(db, 'vagas');
+      const q = query(ref);
+      const snap = await getDocs(q);
+      const minhas = snap.docs
+        .filter(d => d.data().criadoPor?.uid === user.uid)
+        .map(d => ({ id: d.id, ...d.data() }));
+      setVagasCriadas(minhas);
+    };
+    fetch();
+  }, [user]);
+  const [candidatosPorVaga, setCandidatosPorVaga] = React.useState<{ [key: string]: any[] }>({});
+
+  React.useEffect(() => {
+    const buscarCandidatos = async () => {
+      const resultado: { [key: string]: any[] } = {};
+
+      for (const vaga of vagasCriadas) {
+        const ref = collection(db, 'vagas', vaga.id, 'candidaturas');
+        const q = query(ref, orderBy('data', 'desc'));
+        const snap = await getDocs(q);
+        resultado[vaga.id] = snap.docs.map(d => ({
+          uid: d.id,
+          ...d.data(),
+        }));
+      }
+
+      setCandidatosPorVaga(resultado);
+    };
+
+    if (vagasCriadas.length) {
+      buscarCandidatos();
+    }
+  }, [vagasCriadas]);
   const tipoConta = user?.tipoConta as 'empresa' | 'profissional';
+  console.log('candidatos', candidatosPorVaga)
+
+  const [candidaturas, setCandidaturas] = React.useState<any[]>([]);
+  console.log('candidaturas', candidaturas)
+
+  React.useEffect(() => {
+    if (!user) return;
+    const fetch = async () => {
+      const ref = collection(db, 'usuarios', user.uid, 'candidaturas');
+      const q = query(ref, orderBy('data', 'desc'));
+      const snap = await getDocs(q);
+      const lista = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setCandidaturas(lista);
+    };
+    fetch();
+  }, [user]);
+
+  if (loading) return null;
 
   if (loading || !user) {
     return (
@@ -89,7 +145,7 @@ export default function Perfil() {
           <Typography variant="body2" gutterBottom>{user.cidade || 'Cidade não informada'}</Typography>
 
           <Box my={2}>
-            <Link href={`/perfil/${user.uid}`} underline="none"  rel="noopener noreferrer">
+            <Link href={`/perfil/${user.uid}`} underline="none" rel="noopener noreferrer">
               <Button variant="outlined">Ver meu perfil público</Button>
             </Link>
           </Box>
@@ -272,7 +328,31 @@ export default function Perfil() {
         )}
 
 
+        {tipoConta === 'profissional' && (
+          <Card sx={{ boxShadow: 1, border: '1px solid #bbdefb', borderRadius: 2, p: 2 }}>
+            <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+              Vagas que me candidatei
+            </Typography>
 
+            {candidaturas.length === 0 ? (
+              <Typography variant="body2">Você ainda não se candidatou a nenhuma vaga.</Typography>
+            ) : (
+              candidaturas.map(vaga => (
+                <Box key={vaga.id} sx={{ mb: 2 }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {vaga.titulo}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Data: {vaga.data?.toDate ? new Date(vaga.data.toDate()).toLocaleDateString('pt-BR') : '---'}
+                  </Typography>
+                  <Link href={`/vagas/${vaga.id}`} underline="hover">
+                    Ver detalhes da vaga
+                  </Link>
+                </Box>
+              ))
+            )}
+          </Card>
+        )}
         {/* Vagas para empresa */}
         {tipoConta === 'empresa' && (
           <>
@@ -288,6 +368,32 @@ export default function Perfil() {
                 <Link href="#" underline="hover">Baixar todos os currículos</Link>
               </Box>
             </Card>
+            <Typography variant="subtitle1">Candidatos</Typography>
+            {vagasCriadas.map(vaga => (
+              <Card key={vaga.id} sx={{ p: 2, mb: 2 }}>
+                <Typography variant="subtitle1" fontWeight={600}>
+                  {vaga.titulo}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  Criada em: {vaga.dataPublicacao?.toDate ? new Date(vaga.dataPublicacao.toDate()).toLocaleDateString('pt-BR') : '---'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Total de candidatos: {candidatosPorVaga[vaga.id]?.length || 0}
+                </Typography>
+
+                {candidatosPorVaga[vaga.id]?.map(c => (
+                  <Box key={c.uid} sx={{ mt: 1, pl: 2 }}>
+                    <Typography variant="body2">👤 {c.nome}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Data: {c.data?.toDate ? new Date(c.data.toDate()).toLocaleDateString('pt-BR') : '---'}
+                    </Typography>
+                    <Link href={`/perfil/${c.uid}`} underline="hover">
+                      Ver perfil
+                    </Link>
+                  </Box>
+                ))}
+              </Card>
+            ))}
           </>
         )}
 
