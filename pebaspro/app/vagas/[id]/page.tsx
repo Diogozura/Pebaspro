@@ -1,20 +1,60 @@
-import VagaForm from '@/components/VagaForm';
+'use client';
 
-const vagaFake = {
-  titulo: 'Eletricista Residencial',
-  tipo: 'efetivo' as 'efetivo',
-  descricao: 'Precisamos de eletricista com experiência em instalações prediais...',
-  requisitos: 'Curso técnico completo, NR10, experiência de 2 anos',
-  beneficios: 'Vale-transporte, refeição, plano de saúde',
-  local: 'Parauapebas - PA',
-  modalidade: 'presencial',
-  jornada: 'Integral',
-  salario: 'R$ 2.500,00 / mês',
-  whatsapp: '(99) 99999-9999',
-  dataPublicacao: '27/06/2025',
-  encerramento: '' // Adicione um valor apropriado aqui, por exemplo: '30/06/2025'
-};
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import VagaForm from '@/components/VagaForm';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 export default function VisualizarVagaPage() {
-  return <VagaForm modo="visualizar" vaga={vagaFake} />;
+  const { id } = useParams();
+  const [vaga, setVaga] = useState<any>(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    const buscarVaga = async () => {
+      try {
+        const ref = doc(db, 'vagas', String(id));
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const dados = snap.data();
+          setVaga({
+            ...dados,
+            dataPublicacao: dados.dataPublicacao
+              ? new Date(dados.dataPublicacao).toLocaleDateString('pt-BR')
+              : '',
+          });
+        } else {
+          setErro('Vaga não encontrada');
+        }
+      } catch (e) {
+        console.error('Erro ao buscar vaga:', e);
+        setErro('Erro ao buscar vaga');
+      } finally {
+        setCarregando(false);
+      }
+    };
+
+    buscarVaga();
+  }, [id]);
+
+  if (carregando) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (erro) {
+    return (
+      <Box textAlign="center" mt={4}>
+        <Typography color="error">{erro}</Typography>
+      </Box>
+    );
+  }
+
+  return <VagaForm modo="visualizar" vaga={vaga} />;
 }
