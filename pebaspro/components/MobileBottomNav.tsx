@@ -41,7 +41,8 @@ export default function MobileBottomNav() {
         <AddToHomePrompt />
         <BottomNavigationAction label="Home" value="/" icon={<HomeIcon />} />
         <BottomNavigationAction label="Trabalhos" value="/vagas" icon={<WorkIcon />} />
-        <BottomNavigationAction label="Perfil" value="/dashboard" icon={<PersonIcon />} />
+        <BottomNavigationAction label="Profissionais" value="/profissionais" icon={<WorkIcon />} />
+        <BottomNavigationAction label="Perfil" value="/perfil" icon={<PersonIcon />} />
       </BottomNavigation>
     </Paper>
   );

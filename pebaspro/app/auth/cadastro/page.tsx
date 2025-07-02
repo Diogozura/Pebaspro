@@ -57,6 +57,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin}>
           <TextField
+            disabled
             fullWidth
             label="E-mail"
             type="email"
@@ -69,6 +70,7 @@ export default function LoginPage() {
             type="submit"
             variant="contained"
             sx={{ mb: 2 }}
+            disabled
           >
             Entrar
           </Button>
