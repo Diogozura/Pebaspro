@@ -12,7 +12,7 @@ import Link from 'next/link';
 import PersonIcon from '@mui/icons-material/Person';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import { useAuth } from '@/hooks/useAuth';
-import AddToHomePrompt from './AddToHomePrompt';
+
 
 export default function Header() {
 const { user } = useAuth();
@@ -28,7 +28,7 @@ const isLoggedIn = !!user;
 
   return (
     <AppBar position="static" color="transparent" elevation={1}>
-      <AddToHomePrompt />
+      
       <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
         {/* Logo - sempre visível */}
         <Box display="flex" alignItems="center">

@@ -7,15 +7,17 @@ export default function CardProfissional({
   regiao,
   preco,
   avatarUrl,
+  uid,
 }: {
   nome: string;
   servico: string;
   regiao: string;
   preco: string;
   avatarUrl: string;
+  uid: string;
 }) {
   return (
-    <Link href={'/profissionais/1'}>
+    <Link href={`/perfil/${uid}`}>
 
     
     <Card sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#eff6ff', mb: 2 }}>

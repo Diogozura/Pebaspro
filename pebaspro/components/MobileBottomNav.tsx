@@ -6,6 +6,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import PersonIcon from '@mui/icons-material/Person';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import AddToHomePrompt from './AddToHomePrompt';
 
 export default function MobileBottomNav() {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function MobileBottomNav() {
           router.push(newValue);
         }}
       >
+        <AddToHomePrompt />
         <BottomNavigationAction label="Home" value="/" icon={<HomeIcon />} />
         <BottomNavigationAction label="Trabalhos" value="/vagas" icon={<WorkIcon />} />
         <BottomNavigationAction label="Perfil" value="/dashboard" icon={<PersonIcon />} />

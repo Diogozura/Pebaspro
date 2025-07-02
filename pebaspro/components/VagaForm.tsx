@@ -148,18 +148,18 @@ export default function VagaForm({ modo, vaga }: Props) {
             </Typography>
           </Grid>
         )}
-<Grid >
-  <TextField
-    fullWidth
-    label="Encerramento da vaga"
-    name="encerramento"
-    type="date"
-    InputLabelProps={{ shrink: true }}
-    value={dados.encerramento}
-    onChange={handleChange}
-    disabled={modo === 'visualizar'}
-  />
-</Grid>
+        <Grid >
+          <TextField
+            fullWidth
+            label="Encerramento da vaga"
+            name="encerramento"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={dados.encerramento}
+            onChange={handleChange}
+            disabled={modo === 'visualizar'}
+          />
+        </Grid>
         <Grid >
           <Button fullWidth variant="contained" color={modo === 'criar' ? 'primary' : 'success'} onClick={handleSubmit}>
             {modo === 'criar' ? 'Criar vaga' : 'Candidatar-se'}
