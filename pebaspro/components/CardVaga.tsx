@@ -29,6 +29,7 @@ export default function CardVaga({
       <Card
         sx={{
           p: 2,
+          mb: 2,
           backgroundColor: '#f0f9ff',
           borderRadius: 3,
           boxShadow: 2,

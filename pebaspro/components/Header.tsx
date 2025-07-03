@@ -36,7 +36,7 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" passHref>
           <Typography variant="h6" fontWeight={700} color="primary" sx={{ textDecoration: 'none' }}>
-            Paraua<strong style={{ color: '#1976d2' }}>Profissionais</strong>
+            PEBAS<strong style={{ color: '#1976d2' }}>PRO</strong>
           </Typography>
         </Link>
 
