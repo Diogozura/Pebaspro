@@ -28,7 +28,7 @@ export default function Footer() {
           
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Typography variant="h6" fontWeight={700} color="#42a5f5">
-                ParauaProfissionais
+                PebasPro
               </Typography>
               <Typography variant="body2" color="grey.300" mt={1}>
                 Conectando você com os melhores profissionais de Parauapebas.
