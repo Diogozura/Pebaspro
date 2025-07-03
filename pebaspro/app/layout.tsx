@@ -5,6 +5,7 @@ import '@fontsource/inter';
 import './globals.css';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import Head from 'next/head';
+import Footer from '@/components/Footer';
 
 
 export const metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           {children}
           <MobileBottomNav />
+          <Footer/>
         </ThemeRegistry>
       </body>
     </html>
