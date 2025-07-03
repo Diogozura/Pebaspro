@@ -69,7 +69,7 @@ export default function Header() {
             <MenuItem component={Link} href="/profissionais" onClick={handleClose}>
               Buscar Prestadores
             </MenuItem>
-            <MenuItem component={Link} href="/cadastro" onClick={handleClose}>
+            <MenuItem component={Link} href="/auth/cadastro" onClick={handleClose}>
               Quero me Cadastrar
             </MenuItem>
           </Menu>
@@ -96,7 +96,7 @@ export default function Header() {
               <IconButton component={Link} href="/perfil" color="default">
                 <PersonIcon />
               </IconButton>
-              <IconButton component={Link} href="/chat" color="default">
+              <IconButton component={Link} href="/#" color="default">
                 <ChatBubbleOutlineIcon />
               </IconButton>
             </>

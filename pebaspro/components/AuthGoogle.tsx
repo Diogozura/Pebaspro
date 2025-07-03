@@ -31,7 +31,7 @@ export default function AuthGoogle() {
 
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       startIcon={<GoogleIcon />}
       onClick={handleLogin}
       fullWidth

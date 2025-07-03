@@ -22,7 +22,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import CardProfissional from '@/components/CardProfissional';
 
-export default function Perfil({ vagaId }: { vagaId: string }) {
+export default function Perfil() {
   const { user, loading } = useAuth(true);
   const router = useRouter();
 
@@ -42,7 +42,11 @@ export default function Perfil({ vagaId }: { vagaId: string }) {
     facebook: user?.facebook || '',
     linkedin: user?.linkedin || '',
   });
-
+  const [editandoPerfil, setEditandoPerfil] = React.useState(false);
+  const [novoNome, setNovoNome] = React.useState(user?.displayName || '');
+  const [novaAtuacao, setNovaAtuacao] = React.useState(user?.atuacao || '');
+  const [novoPreco, setNovoPreco] = React.useState(user?.preco || '');
+  const [novaCidade, setNovaCidade] = React.useState(user?.cidade || '');
   const [editandoCertificacoes, setEditandoCertificacoes] = React.useState(false);
   const [certificacoes, setCertificacoes] = React.useState<any[]>([]);
 
@@ -117,6 +121,15 @@ export default function Perfil({ vagaId }: { vagaId: string }) {
       </Box>
     );
   }
+  const salvarPerfil = async () => {
+    await updateDoc(doc(db, 'usuarios', user.uid), {
+      displayName: novoNome,
+      atuacao: novaAtuacao,
+      preco: novoPreco,
+      cidade: novaCidade,
+    });
+    setEditandoPerfil(false);
+  };
 
   const salvarSobre = async () => {
     await updateDoc(doc(db, 'usuarios', user.uid), { sobreMim: novoSobre });
@@ -138,20 +151,79 @@ export default function Perfil({ vagaId }: { vagaId: string }) {
       <Stack spacing={3}>
 
         {/* Perfil principal */}
-        <Card sx={{ boxShadow: 2, border: '1px solid #90caf9', borderRadius: 2, p: 2, textAlign: 'center' }}>
-          <Avatar src={user.photoURL || '/default-avatar.png'} sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }} />
-          <Typography variant="h6">{user.displayName}</Typography>
-          <Typography variant="body2">{user.atuacao || 'Nenhuma atuação informada'}</Typography>
-          <Typography variant="body2" gutterBottom>{user.cidade || 'Cidade não informada'}</Typography>
-
-          <Box my={2}>
-            <Link href={`/perfil/${user.uid}`} underline="none" rel="noopener noreferrer">
-              <Button variant="outlined">Ver meu perfil público</Button>
-            </Link>
+        {/* Perfil principal */}
+        <Card sx={{ boxShadow: 2, border: '1px solid #90caf9', borderRadius: 2, p: 2 }}>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="subtitle1" fontWeight={600}>Perfil</Typography>
+            <IconButton size="small" onClick={() => setEditandoPerfil(!editandoPerfil)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
           </Box>
 
-          <LogoutButton />
+          <Box textAlign="center" mt={2} mb={2}>
+            <Avatar src={user.photoURL || '/default-avatar.png'} sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }} />
+          </Box>
+
+          {editandoPerfil ? (
+            <>
+              <TextField
+                fullWidth
+                label="Nome"
+                margin="dense"
+                value={novoNome}
+                onChange={(e) => setNovoNome(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Área de atuação"
+                margin="dense"
+                value={novaAtuacao}
+                onChange={(e) => setNovaAtuacao(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Preço por hora"
+                margin="dense"
+                value={novoPreco}
+                onChange={(e) => setNovoPreco(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                label="Cidade"
+                margin="dense"
+                value={novaCidade}
+                onChange={(e) => setNovaCidade(e.target.value)}
+              />
+
+              <Box mt={2} display="flex" gap={1}>
+                <Button variant="contained" onClick={salvarPerfil}>Salvar</Button>
+                <Button onClick={() => {
+                  setEditandoPerfil(false);
+                  setNovoNome(user.displayName || '');
+                  setNovaAtuacao(user.atuacao || '');
+                  setNovoPreco(user.preco || '');
+                  setNovaCidade(user.cidade || '');
+                }}>Cancelar</Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Typography variant="h6">{user.displayName}</Typography>
+              <Typography variant="body2">{user.atuacao || 'Nenhuma atuação informada'}</Typography>
+              <Typography variant="body2">{user.preco ? `R$ ${user.preco}/h` : 'Valor não informado'}</Typography>
+              <Typography variant="body2">{user.cidade || 'Cidade não informada'}</Typography>
+
+              <Box my={2}>
+                <Link href={`/perfil/${user.uid}`} underline="none" rel="noopener noreferrer">
+                  <Button variant="outlined">Ver meu perfil público</Button>
+                </Link>
+              </Box>
+
+              <LogoutButton />
+            </>
+          )}
         </Card>
+
 
         {/* Contato */}
         <Card sx={{ boxShadow: 1, border: '1px solid #bbdefb', borderRadius: 2, p: 2, backgroundColor: '#f5faff' }}>

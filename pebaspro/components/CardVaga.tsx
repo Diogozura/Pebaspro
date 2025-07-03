@@ -1,4 +1,6 @@
-import { Box, Button, Card, Typography } from '@mui/material';
+'use client';
+
+import { Box, Button, Card, Typography, Avatar, Stack } from '@mui/material';
 import Link from 'next/link';
 
 export default function CardVaga({
@@ -11,7 +13,7 @@ export default function CardVaga({
   empresa,
   data,
 }: {
-   id: string;
+  id: string;
   vaga: string;
   detalhe: string;
   regiao: string;
@@ -23,20 +25,56 @@ export default function CardVaga({
   const dataFormatada = data ? new Date(data).toLocaleDateString('pt-BR') : '';
 
   return (
-    <Link href={`/vagas/${id}`}>
-      <Card sx={{ p: 2, backgroundColor: '#eff6ff', mb: 2 }}>
-        <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography fontWeight={600}>{vaga}</Typography>
-          <Typography variant="caption">{dataFormatada}</Typography>
+    <Link href={`/vagas/${id}`} style={{ textDecoration: 'none' }}>
+      <Card
+        sx={{
+          p: 2,
+          backgroundColor: '#f0f9ff',
+          borderRadius: 3,
+          boxShadow: 2,
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': {
+            boxShadow: 4,
+            transform: 'translateY(-2px)',
+          },
+        }}
+      >
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+          <Typography variant="h6" fontWeight={700} color="primary">
+            {vaga}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {dataFormatada}
+          </Typography>
         </Box>
 
-        <Typography>Detalhe: {detalhe}</Typography>
-        <Typography>Região: {regiao}</Typography>
-        <Typography>Valor pago: {valor}</Typography>
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          {detalhe}
+        </Typography>
 
-        <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-          <Typography variant="body2" fontWeight={500}>{empresa}</Typography>
-          {logoUrl && <img src={logoUrl} alt="logo" height={32} />}
+        <Stack direction="row" spacing={2} mt={1}>
+          <Box>
+            <Typography variant="body2">
+              <strong>Região:</strong> {regiao}
+            </Typography>
+            <Typography variant="body2">
+              <strong>Valor:</strong> {valor}
+            </Typography>
+          </Box>
+        </Stack>
+
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt={2}
+        >
+          <Typography variant="body2" fontWeight={600} color="text.primary">
+            {empresa}
+          </Typography>
+          {logoUrl && (
+            <Avatar src={logoUrl} alt="logo empresa" sx={{ width: 40, height: 40 }} />
+          )}
         </Box>
       </Card>
     </Link>

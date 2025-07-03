@@ -24,5 +24,10 @@ export default function VagaPage() {
 
   if (!vaga) return <p>Carregando vaga...</p>;
 
-  return <VagaDetalhes vaga={vaga} />;
+  return (
+  <>
+  <VagaDetalhes vaga={vaga} />
+  
+  </>
+  )
 }
