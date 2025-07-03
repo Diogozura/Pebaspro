@@ -23,7 +23,7 @@ export default function Footer() {
   return (
     <Box sx={{ bgcolor: '#0c1425', color: 'white', py: 6, mt: 10 }}>
       <Container>
-        <Grid container spacing={4}>
+        <Grid container spacing={4} mb={2}>
           {/* Logo e descrição */}
           
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>

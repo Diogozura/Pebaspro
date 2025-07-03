@@ -32,7 +32,7 @@ export default function CardProfissional({
             boxShadow: 4,
             transform: 'translateY(-2px)',
           },
-        }}
+        }} 
       >
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center" gap={2}>

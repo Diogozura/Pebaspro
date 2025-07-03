@@ -3,10 +3,11 @@ import { db } from '@/lib/firebase';
 import { notFound } from 'next/navigation';
 import PerfilActions from './PerfilActions';
 import type { Metadata } from 'next';
-import { Avatar, Box, Card, CardContent, Container, Divider, Grid, Typography } from '@mui/material';
+import { Avatar, Box, Breadcrumbs, Card, CardContent, Container, Divider, Grid, Typography } from '@mui/material';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkIcon from '@mui/icons-material/Work';
+import Link from 'next/link';
 
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
@@ -26,58 +27,83 @@ export default async function PerfilPublico(props: any) {
   if (!snap.exists()) return notFound();
 
   const data = snap.data();
-
+  console.log('Dados do perfil:', data);
   return (
-    <Container maxWidth="sm" sx={{ mt: 4, mb: 6 }}>
-      <Card variant="outlined" sx={{ borderRadius: 2, boxShadow: 3 }}>
-        <CardContent>
-          <Box textAlign="center" mb={3}>
-            <Avatar
-              src={data.photoURL || '/default-avatar.png'}
-              sx={{ width: 80, height: 80, margin: '0 auto', mb: 1 }}
-            />
-            <Typography variant="h5" fontWeight={600}>
-              {data.nome}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Profissional cadastrado no PebasPro
-            </Typography>
-          </Box>
+    <Box>
 
-          <Divider sx={{ mb: 3 }} />
+      <Container sx={{ mt: 2 }}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link href="/">
+            Início
+          </Link>
+          <Link href="/vagas">
+            Serviços
+          </Link>
+          <Typography color="text.primary">{data.nome}</Typography>
+        </Breadcrumbs>
+      </Container>
+      <Container maxWidth="sm" sx={{ mt: 4, mb: 6 }}>
+        {/* Breadcrumbs */}
 
-          <Grid container spacing={2}>
-            <Grid  size={12}>
-              <Box display="flex" alignItems="center" gap={1}>
-                <WorkIcon color="primary" />
-                <Typography variant="body1">
-                  <strong>Área:</strong> {data.area || 'Não informada'}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid  size={12}>
-              <Box display="flex" alignItems="center" gap={1}>
-                <LocationOnIcon color="primary" />
-                <Typography variant="body1">
-                  <strong>Região:</strong> {data.regiao || 'Não informada'}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid  size={12}>
-              <Box display="flex" alignItems="center" gap={1}>
-                <PhoneIcon color="primary" />
-                <Typography variant="body1">
-                  <strong>Telefone:</strong> {data.telefone || 'Não informado'}
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
+        <Card variant="outlined" sx={{ borderRadius: 2, boxShadow: 3 }}>
+          <CardContent>
+            <Box textAlign="center" mb={3}>
+              <Avatar
+                src={data.photoURL || '/default-avatar.png'}
+                sx={{ width: 80, height: 80, margin: '0 auto', mb: 1 }}
+              />
+              <Typography variant="h5" fontWeight={600}>
+                {data.nome}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Profissional cadastrado no PebasPro
+              </Typography>
+            </Box>
 
-          <Box mt={4}>
-            <PerfilActions uid={uid} nome={data.nome} />
-          </Box>
-        </CardContent>
-      </Card>
-    </Container>
+            <Divider sx={{ mb: 3 }} />
+
+            <Grid container spacing={2}>
+              <Grid size={12}>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <WorkIcon color="primary" />
+                  <Typography variant="body1">
+                    <strong>Área:</strong> {data.atuacao || 'Não informada'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={12}>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <LocationOnIcon color="primary" />
+                  <Typography variant="body1">
+                    <strong>Região:</strong> {data.cidade || 'Não informada'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={12}>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <PhoneIcon color="primary" />
+                  <Typography variant="body1">
+                    <strong>Telefone:</strong> {data.telefone || 'Não informado'}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={12}>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <PhoneIcon color="primary" />
+                  <Typography variant="body1">
+                    <strong>Preço por hora:</strong> R$ {data.preco || 'Não informado'}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Box mt={4}>
+              <PerfilActions uid={uid} nome={data.nome} />
+            </Box>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
+
   );
 }

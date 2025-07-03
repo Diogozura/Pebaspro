@@ -30,13 +30,13 @@ export default function AddToHomePrompt() {
 
     if (outcome === 'accepted') {
       localStorage.setItem('pwa-install-dismissed', 'true');
-      setVisible(false);
+      setVisible(true);
     }
   };
 
   const handleDismiss = () => {
     localStorage.setItem('pwa-install-dismissed', 'true');
-    setVisible(false);
+    setVisible(true);
   };
 
   if (!visible) return null;
