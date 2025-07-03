@@ -5,7 +5,7 @@ Conecta empresas que oferecem vagas a profissionais que buscam oportunidades de 
 
 ## 🔗 Acesso ao Sistema (produção)
 
-- 🌐 URL pública: [https://pebaspro.vercel.app](https://pebaspro.vercel.app)
+- 🌐 URL pública: [https://www.pebaspro.com.br/](https://www.pebaspro.com.br/)
 
 ---
 
@@ -24,7 +24,7 @@ Conecta empresas que oferecem vagas a profissionais que buscam oportunidades de 
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/pebaspro.git
+git clone https://github.com/Diogozura/Pebaspro
 cd pebaspro
 ```
 
