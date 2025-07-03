@@ -63,7 +63,7 @@ export default function Footer() {
             <Grid size={{ xs: 6, sm: 6, md: 3 }}>
               <Typography variant="subtitle1" fontWeight={600} gutterBottom>Categorias</Typography>
               {['Eletricista', 'Encanador', 'Pedreiro', 'Pintor', 'Diarista', 'Mecânico'].map((cat) => (
-                <Link key={cat} href="#" underline="hover" color="grey.300" display="block" mb={0.5}>
+                <Link key={cat} href="/profissionais" underline="hover" color="grey.300" display="block" mb={0.5}>
                   {cat}
                 </Link>
               ))}
@@ -80,11 +80,11 @@ export default function Footer() {
               </Stack>
               <Stack direction="row" alignItems="center" spacing={1} mb={1}>
                 <PhoneIcon fontSize="small" />
-                <Typography variant="body2" color="grey.300">(94) 99999-9999</Typography>
+                <Typography variant="body2" color="grey.300">(94) 992642914</Typography>
               </Stack>
               <Stack direction="row" alignItems="center" spacing={1} mb={1}>
                 <EmailIcon fontSize="small" />
-                <Typography variant="body2" color="grey.300">contato@parauaprofissionais.com</Typography>
+                <Typography variant="body2" color="grey.300">contato.pebaspro@gmail.com</Typography>
               </Stack>
               <Stack direction="row" alignItems="center" spacing={1} mb={2}>
                 <AccessTimeIcon fontSize="small" />
@@ -93,9 +93,12 @@ export default function Footer() {
 
               <Typography variant="subtitle2" fontWeight={600}>Siga-nos</Typography>
               <Stack direction="row" spacing={1} mt={1}>
-                <IconButton sx={{ bgcolor: '#1877f2' }}><FacebookIcon sx={{ color: '#fff' }} /></IconButton>
-                <IconButton sx={{ bgcolor: '#e1306c' }}><InstagramIcon sx={{ color: '#fff' }} /></IconButton>
-                <IconButton sx={{ bgcolor: '#1da1f2' }}><TwitterIcon sx={{ color: '#fff' }} /></IconButton>
+                <Link href="#" underline="none"><IconButton sx={{ bgcolor: '#1877f2' }}><FacebookIcon sx={{ color: '#fff' }} /></IconButton></Link>
+                <Link href="https://www.instagram.com/pebas_prooficial" underline="none"><IconButton sx={{ bgcolor: '#e1306c' }}><InstagramIcon sx={{ color: '#fff' }} /></IconButton></Link>
+                <Link href="#" underline="none"><IconButton sx={{ bgcolor: '#1da1f2' }}><TwitterIcon sx={{ color: '#fff' }} /></IconButton></Link>
+                
+               
+                
               </Stack>
             </Grid>
           
