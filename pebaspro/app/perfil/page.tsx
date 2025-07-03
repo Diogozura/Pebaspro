@@ -95,10 +95,10 @@ export default function Perfil() {
     }
   }, [vagasCriadas]);
   const tipoConta = user?.tipoConta as 'empresa' | 'profissional';
-  console.log('candidatos', candidatosPorVaga)
+  
 
   const [candidaturas, setCandidaturas] = React.useState<any[]>([]);
-  console.log('candidaturas', candidaturas)
+ 
 
   React.useEffect(() => {
     if (!user) return;
