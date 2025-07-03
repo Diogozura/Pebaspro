@@ -4,6 +4,7 @@
   "description": "Conecte-se com profissionais qualificados ou encontre o serviço ideal. Tudo em um só lugar.",
   "lang": "pt-BR",
   "start_url": "/",
+  "display": "standalone", 
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#f7931e",
